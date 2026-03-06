@@ -1,0 +1,11 @@
+Complaint,Category
+My order is delayed,Delivery Issue
+Delivery is very late,Delivery Issue
+Package not delivered,Delivery Issue
+Refund not received,Refund Issue
+I want my money back,Refund Issue
+Payment failed but money deducted,Payment Issue
+Payment not going through,Payment Issue
+Product is damaged,Product Issue
+Received broken item,Product Issue
+Item quality is bad,Product Issue

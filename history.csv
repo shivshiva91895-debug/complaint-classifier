@@ -1,0 +1,7 @@
+Complaint,Category,Time
+My order is delayed,Delivery Issue,2026-03-05 19:10:17
+Refund not received,Refund Issue,2026-03-06 00:00:00
+My delivery is late,Delivery Issue,2026-03-06 15:28:17
+I didn't get my refund,Refund Issue,2026-03-06 15:28:47
+Payment deducted but failed,Payment Issue,2026-03-06 15:29:10
+Payment deducted but failed,Payment Issue,2026-03-06 15:39:51

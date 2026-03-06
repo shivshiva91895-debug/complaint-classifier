@@ -1,0 +1,96 @@
+<<!DOCTYPE html>
+<html>
+
+<head>
+<title>Customer Complaint Classifier</title>
+</head>
+
+<body style="text-align:center;font-family:Arial">
+
+<h1>Customer Complaint Classifier</h1>
+
+<form method="POST">
+
+<textarea name="complaint" rows="6" cols="60"
+placeholder="Enter your complaint"></textarea>
+
+<br><br>
+
+<button type="submit">Predict Category</button>
+
+</form>
+
+
+{% if prediction %}
+<h2 style="color:green">{{ prediction }}</h2>
+{% endif %}
+
+
+<h2>Complaint History</h2>
+
+<h3>Total Complaints : {{ total }}</h3>
+
+<table border="1" align="center">
+
+<tr>
+<th>Complaint</th>
+<th>Category</th>
+<th>Time</th>
+</tr>
+
+{% for row in history %}
+
+<tr>
+
+<td>{{ row["Complaint"] }}</td>
+
+<td>{{ row["Category"] }}</td>
+
+<td>{{ row["Time"] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/clear">
+<button style="background:red;color:white;padding:10px">
+Clear History
+</button>
+</a>
+
+
+<h2>Complaint Statistics</h2>
+
+<p>Delivery Issues : {{ stats["Delivery Issue"] }}</p>
+<p>Refund Issues : {{ stats["Refund Issue"] }}</p>
+<p>Payment Issues : {{ stats["Payment Issue"] }}</p>
+<p>Product Issues : {{ stats["Product Issue"] }}</p>
+
+<canvas id="complaintChart" width="400" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+var ctx = document.getElementById('complaintChart').getContext('2d');
+
+var chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: ['Delivery', 'Refund', 'Payment', 'Product'],
+        datasets: [{
+            label: 'Complaints',
+            data: [
+                {{ stats["Delivery Issue"] }},
+                {{ stats["Refund Issue"] }},
+                {{ stats["Payment Issue"] }},
+                {{ stats["Product Issue"] }}
+            ],
+            backgroundColor: ['blue','green','orange','red']
+        }]
+    }
+});
+</script>
