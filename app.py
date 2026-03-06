@@ -4,68 +4,90 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-HISTORY_FILE = "history.csv"
+history_file = "history.csv"
 
 
+# Complaint classification
 def predict_category(text):
+
     text = text.lower()
 
     if "delay" in text or "late" in text:
         return "Delivery Issue"
+
     elif "refund" in text:
         return "Refund Issue"
+
     elif "payment" in text:
         return "Payment Issue"
+
     elif "product" in text or "damage" in text:
         return "Product Issue"
+
     else:
         return "Other Issue"
 
 
+# Read complaint history
 def read_history():
+
     history = []
+
     try:
-        with open(HISTORY_FILE, newline='', encoding="utf-8") as file:
+        with open(history_file, newline="", encoding="utf-8") as file:
+
             reader = csv.DictReader(file)
+
             for row in reader:
                 history.append(row)
+
     except:
         pass
+
     return history
 
 
+# Save complaint
 def save_history(complaint, category):
-    from datetime import datetime
 
     time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    with open("history.csv", "a", newline="", encoding="utf-8") as file:
+    with open(history_file, "a", newline="", encoding="utf-8") as file:
+
         writer = csv.writer(file)
+
         writer.writerow([complaint, category, time])
 
-@app.route("/", methods=["GET", "POST"])
+
+# Main page
+@app.route("/", methods=["GET","POST"])
 def index():
 
     prediction = None
 
     if request.method == "POST":
-        complaint = request.form["complaint"]
 
-        prediction = predict_category(complaint)
+       complaint = request.form["complaint"]
 
-        save_history(complaint, prediction)
+if complaint.strip() != "":
+    prediction = predict_category(complaint)
+    save_history(complaint, prediction)
+else:
+    prediction = None
 
     history = read_history()
 
     stats = {
-        "Delivery Issue": 0,
-        "Refund Issue": 0,
-        "Payment Issue": 0,
-        "Product Issue": 0
+        "Delivery Issue":0,
+        "Refund Issue":0,
+        "Payment Issue":0,
+        "Product Issue":0
     }
 
     for row in history:
+
         cat = row["Category"]
+
         if cat in stats:
             stats[cat] += 1
 
@@ -78,15 +100,22 @@ def index():
     )
 
 
+# Clear history
 @app.route("/clear")
 def clear():
 
-    with open(HISTORY_FILE, "w", newline='', encoding="utf-8") as file:
+    with open(history_file, "w", newline="", encoding="utf-8") as file:
+
         writer = csv.writer(file)
-        writer.writerow(["Complaint", "Category", "Time"])
+
+        writer.writerow(["Complaint","Category","Time"])
 
     return index()
 
 
+import os
+
+# Run server
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
